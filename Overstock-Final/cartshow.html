@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./CSS/Landing.css">
+    <link rel="stylesheet" href="./CSS/cart.css">
+</head>
+
+<body id="body">
+    <div id="navbar"></div>
+    <h1 id="h11">Shopping Cart</h1>
+
+    <div id="sort">
+        <p>Sort By:</p> 
+        <select name="" id="select">
+            <option value="">Best Selling</option>
+            <option value="low">Price Low-High</option>
+            <option value="high">Price High-Low</option>
+        </select>
+    </div>
+    <div id="displayCart">
+    <div id="container">
+
+    </div>
+         
+<div id="total"></div>
+</div>
+           <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    <div id="footer"></div>
+    
+</body>
+</html>
+<script type="module">
+    import { navigation, Footer } from "./JS/Landing.js"
+    
+    let l=navigation()
+    document.getElementById("navbar").innerHTML=l
+    let f=Footer()
+    document.getElementById("footer").innerHTML=f
+    let count=0
+
+   let data=JSON.parse(localStorage.getItem("cartdata"))
+   var  div2;
+   let itemdata=[]
+    showcartproduct(data)
+  // short functinality 
+  document.getElementById("select").addEventListener("change",changeitem)
+    function changeitem(){
+        let value=document.querySelector("#select").value
+        if(value=="high"){
+        data.sort(function(a,b){
+            return b.price - a.price
+        })
+    }else if (value=="low"){
+        data.sort(function(a,b){
+            return a.price - b.price
+        })
+    }
+    
+        showcartproduct(data)
+        console.log(data)
+    }
+
+// cart products appending
+
+    function showcartproduct(data){
+        var total =0;
+    document.getElementById("container").innerHTML=""
+      data.map((ele,index)=>{
+
+        let a=document.createElement("a")
+
+        a.addEventListener("click",function(){
+
+itemdata.push(ele)
+localStorage.setItem("itemdata",JSON.stringify(itemdata))
+console.log(itemdata)
+window.location.href="/product4.html"
+
+})
+
+
+
+        let image=document.createElement("img")
+        image.src=ele.image_link
+
+        let h2=document.createElement("h2")
+        h2.textContent=`Sale INR ${ele.price}`
+        total+= Number(ele.price);
+        //  console.log(total);
+        let div=document.createElement("div")
+        let star1=document.createElement("img")
+star1.src="https://ak1.ostkcdn.com/img/mxc/20200227_rating-star-full.svg"
+
+        let star2=document.createElement("img")
+star2.src="https://ak1.ostkcdn.com/img/mxc/20200227_rating-star-full.svg"
+
+        let star3=document.createElement("img")
+star3.src="https://ak1.ostkcdn.com/img/mxc/20200227_rating-star-full.svg"
+        let star4=document.createElement("img")
+star4.src="https://ak1.ostkcdn.com/img/mxc/20200227_rating-star-full.svg"
+        let star5=document.createElement("img")
+        star5.src="https://ak1.ostkcdn.com/img/mxc/20200227_rating-star-empty.svg"
+       
+        let button=document.createElement("button")
+        button.id="cartbutton"
+        button.textContent="Remove"
+        button.addEventListener("click",function(){
+
+                deleteitem(index)
+        })
+
+div.append(star1,star2,star3,star4,star5)
+        let p=document.createElement("p")
+        p.textContent=ele.title
+        a.append(image,h2,div,p)
+        div2=document.createElement("div")
+        div2.id="div2"
+        div2.append(a,button)
+        document.getElementById("container").append(div2)
+    });
+    var totalDiv = document.getElementById("total");
+    // cart total div appending
+    totalDiv.innerHTML="";
+    var p = document.createElement("p");
+    p.innerText = `(${data.length})items : INR ${total}`;
+
+    var p1 = document.createElement("p");
+    var saving = total*0.1;
+    p1.innerText = `Promotional savings : -INR ${saving}`;
+    var p2 = document.createElement("p");
+    p2.innerText = `Subtotal after Discount : INR ${total-saving}` ;
+    var p3 = document.createElement("p");
+    p3.innerText = `Total : INR ${total-saving}`;
+    p3.style="color:red; font-size:20px";
+    var btn = document.createElement("button");
+    btn.innerText="Checkout";
+    btn.style="background-color:white;font-size:15px;font-weight:550; border-radius:3%;color:black;padding:2%;border:none";
+    btn.addEventListener("click",()=>{
+        window.location.href="payment.html"
+    })
+
+    totalDiv.append(p,p1,p2,p3,btn);
+    }
+
+    console.log(total);
+
+    // cart total ends
+
+    document.querySelector(".dropbtn").addEventListener("click", function(){
+    window.location.href="/furniture.html"
+  })
+  document.querySelector("#dropbtn2").addEventListener("click", function(){
+    window.location.href="/Rugs.html"
+  })
+  document.querySelector("#dropbtn3").addEventListener("click", function(){
+    window.location.href="/decor.html"
+  })
+
+    function deleteitem(i){
+    data.splice(i,1)
+    
+localStorage.setItem("cartdata",JSON.stringify(data))
+showcartproduct(data)
+   cartcount()
+
+    }
+    
+
+
+cartcount()
+function cartcount(){
+    let totalcart=JSON.parse(localStorage.getItem("cartdata"))
+    document.getElementById("p-last").innerHTML=totalcart.length
+    console.log(totalcart.length)
+    
+}
+
+document.querySelector(".dropbtn").addEventListener("click", function(){
+    window.location.href="/furniture.html"
+  })
+document.querySelector("#home").addEventListener("click", function(){
+    window.location.href="/index.html"
+  })
+
+  //search 
+  let search=[]
+document.getElementById("search-Icon").addEventListener("click",function(){
+let value=document.getElementById("searchbox").value.toLowerCase()
+if(value.length!=0){
+search.push(value)
+localStorage.setItem("search",JSON.stringify(search))
+window.location.href="/search.html"
+}
+
+})
+
+let username= JSON.parse(localStorage.getItem("username"))
+usern(username)
+function usern(u){
+  document.getElementById("H-username").innerHTML=u[u.length-1]
+
+}
+
+document.querySelector("#H-last-A").addEventListener("click", function(){
+    window.location.href="/account.html"
+  })
+
+  document.querySelector("#H-last-C").addEventListener("click", cart)
+
+function cart(){
+    window.location.href="/cartshow.html"
+    console.log("Naveen")
+}
+
+ 
+    
+
+
+</script>
